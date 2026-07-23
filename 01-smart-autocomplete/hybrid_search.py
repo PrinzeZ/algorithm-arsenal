@@ -9,7 +9,7 @@ from semantic_layer import SemanticSearch
 
 class HybridAutocomplete:
     def __init__(self):
-        self.trie = SmartAutocomplete(k=10)  # Store top 10 for flexibility
+        self.trie = SmartAutocomplete(k=10)
         self.semantic = SemanticSearch()
         self.max_freq = 1
         self._index_built = False
@@ -31,17 +31,17 @@ class HybridAutocomplete:
         if not self._index_built:
             return []
         
-        # Trie: instant prefix matches
+        # Trie: returns [(freq, word), ...]
         trie_results = self.trie.search(query, limit=limit)
         
-        # Semantic: meaning matches
+        # Semantic: returns [(word, similarity), ...]
         semantic_results = self.semantic.semantic_search(query, top_k=limit * 2)
         
         # Merge scores
         candidates = {}
         
         # Trie scores (normalized 0-1)
-        for freq, word in trie_results:  # Note: (freq, word) from new Trie
+        for freq, word in trie_results:
             trie_score = freq / self.max_freq
             candidates[word] = {
                 'trie_score': trie_score,
